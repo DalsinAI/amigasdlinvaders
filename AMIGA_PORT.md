@@ -7,7 +7,8 @@ and MOD music, from https://sourceforge.net/projects/sdlinvaders/ (GPL 2
 or later), for GFOS: AmigaOS 3.2 with GFOpenUp, on a 68040 or 68060 with
 an FPU, on GFOpenUp's SDL 2 through sdl12-compat.
 
-Status: built in Cradle's os32-gcc16-open6 stove; lab test pending.
+Status: built in the os32-gcc16-open6 stove; played in the AmiCradle lab
+(t3-blues-20261104): pictures, a game, the high-score table and quit.
 
 
 What you need
