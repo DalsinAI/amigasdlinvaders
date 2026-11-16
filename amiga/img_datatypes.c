@@ -21,6 +21,7 @@
 #include <proto/intuition.h>
 #include <proto/datatypes.h>
 #include <proto/dos.h>
+#include <clib/alib_protos.h>
 #include <stdlib.h>
 #include <string.h>
 
