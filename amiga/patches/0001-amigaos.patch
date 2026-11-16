@@ -1,6 +1,6 @@
 diff -ru a/main.c b/main.c
 --- a/main.c	2026-11-16 21:35:03.162003936 +0000
-+++ b/main.c	2026-11-16 21:35:03.177694131 +0000
++++ b/main.c	2026-11-16 21:51:25.723893817 +0000
 @@ -22,6 +22,9 @@
  #include "alien.h"
  #include "weapons.h"
@@ -11,7 +11,33 @@ diff -ru a/main.c b/main.c
  
  #define TICKS  30
  
-@@ -773,7 +776,12 @@
+@@ -43,7 +46,12 @@
+ #else
+ int sound = 1;
+ #endif
++#ifdef __amigaos__
++/* GFOS: a window on the Workbench; --fullscreen gives the game a screen */
++int fullscreen=0;
++#else
+ int fullscreen=1;
++#endif
+ extern int wavenumber;
+ int max_shots = INIT_MAX_SHOTS;
+ extern int game_points;
+@@ -663,7 +671,11 @@
+ {
+     puts("The newest version can be obtained at http://www.sdlinvaders.de/\n");
+     printf("Usage: %s [options]\n",argv[0]);
+-    puts("  [-f, --fullscreen]         start in fullscreen mode (default)");
++  #ifdef __amigaos__
++  puts("  [-f, --fullscreen]         start in fullscreen mode (a window is the default)");
++#else
++  puts("  [-f, --fullscreen]         start in fullscreen mode (default)");
++#endif
+     puts("  [-w, --windowed]           start in windowed mode");
+     puts("  [-s, --nosound]            start without sound");
+     puts("  [-e, --easy]               play in easy mode - only for wimps");
+@@ -773,7 +785,12 @@
    int i;
    char filename[100];
         
@@ -24,7 +50,7 @@ diff -ru a/main.c b/main.c
  
    file = fopen(filename, "w");
  
-@@ -782,6 +790,9 @@
+@@ -782,6 +799,9 @@
      fprintf(stderr, "\n%s\n"
  	    "The error that occured was:\n"
  	    "%s\n\n", filename, strerror(errno));
@@ -34,7 +60,7 @@ diff -ru a/main.c b/main.c
    }
  
    for (i=0;i<HIGHSCORES;i++) {
-@@ -800,7 +811,12 @@
+@@ -800,7 +820,12 @@
    int i;
    char filename[100];
         
@@ -47,7 +73,7 @@ diff -ru a/main.c b/main.c
  
    file = fopen(filename, "r");
  
-@@ -812,11 +828,24 @@
+@@ -812,11 +837,24 @@
    }
  
    /* Read in the highscores from the file */
@@ -72,7 +98,7 @@ diff -ru a/main.c b/main.c
    fclose(file);
  
    if(game_points > highscore[HIGHSCORES-1].points) {
-@@ -832,6 +861,14 @@
+@@ -832,6 +870,14 @@
  {
    int quit = 0;
  

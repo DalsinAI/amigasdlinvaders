@@ -22,7 +22,7 @@ the right button changes the weapon.
 The high scores are kept in the drawer's User/highscores. From a Shell:
   SDLInvaders --nosound   no sound or music
   SDLInvaders --easy      the easier game
-  SDLInvaders --fullscreen
+  SDLInvaders --fullscreen   a screen of its own (a window is the default)
 
 The keys every AmiCradle game has on Right Amiga (GFOpenUp's SDL2.module):
 Right Amiga + F window or full screen, + P pause, + Q quit, + M free the
