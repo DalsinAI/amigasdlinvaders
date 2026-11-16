@@ -2,6 +2,7 @@
  * the game reads its data/ from.
  * Copyright (c) 2026 AmiCradle Team. GPL 2 or later, like SDLInvaders. */
 #include <stdlib.h>
+#include <string.h>
 #include <exec/types.h>
 #include <dos/dos.h>
 #include <proto/exec.h>
@@ -74,4 +75,12 @@ void amiga_setup(void)
             }
         }
     }
+}
+
+/* LAB TRACE ONLY: not for the PR */
+#include <stdio.h>
+void si_trace(const char *s)
+{
+    BPTR f = Open((CONST_STRPTR)"PROGDIR:trace.txt", MODE_READWRITE);
+    if (f) { Seek(f, 0, OFFSET_END); Write(f, (APTR)s, strlen(s)); Write(f, (APTR)"\n", 1); Close(f); }
 }

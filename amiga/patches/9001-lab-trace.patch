@@ -1,0 +1,69 @@
+diff -ru a/main.c b/main.c
+--- a/main.c	2026-11-16 21:45:29.792504783 +0000
++++ b/main.c	2026-11-16 21:45:29.807969669 +0000
+@@ -711,6 +711,7 @@
+ int init_sdl_stuff ()
+ {
+   /* Initialize SDL's video system and check for errors */
++  { extern void si_trace(const char *); si_trace("SDL_Init"); }
+   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+     printf("Unable to initialize SDL: %s\n", SDL_GetError());
+     return 1;
+@@ -719,7 +720,10 @@
+   /* Make sure SDL_Quit gets called when the program exits! */
+   atexit(SDL_Quit);
+ 
++  { extern void si_trace(const char *); si_trace("init ok, ShowCursor"); }
+   SDL_ShowCursor(SDL_DISABLE);
++  { extern void si_trace(const char *); si_trace("ShowCursor ok"); }
++
+ 
+   srand (time(NULL));
+ 
+@@ -730,6 +734,7 @@
+   else {
+     screen = SDL_SetVideoMode(X_RESOLUTION, Y_RESOLUTION, 16, 0);
+   }
++  { extern void si_trace(const char *); si_trace("SetVideoMode back"); }
+   if (screen == NULL) {
+     printf("Unable to set video mode: %s\n", SDL_GetError());
+     return 1;
+@@ -868,11 +873,15 @@
+   if (argc == 0)
+     argv = wb_argv;
+   amiga_setup();
++  { extern void si_trace(const char *); si_trace("setup done"); }
++
+ #endif
+   printf("\nSDLInvaders Version %s\n\n",VERSION);
+ 
+   /* Command line arguments are parsed */
+   ReadCommandLine(argv);
++  { extern void si_trace(const char *); si_trace("args done"); }
++
+ 
+   /* The SDL stuff is initialised */
+   if(init_sdl_stuff ()) {
+@@ -880,15 +889,22 @@
+   }
+ 
+   if (sound) music_init();
++  { extern void si_trace(const char *); si_trace("music_init done"); }
++
+ 
+   SDL_WM_SetCaption("SDL Invaders","SDL Invaders");
++  { extern void si_trace(const char *); si_trace("caption done"); }
++
+ 
+   /* All bitmaps are loaded and initialised */
+   if (init_images()) {
+     return 1;
+   }
+ 
++  { extern void si_trace(const char *); si_trace("images done"); }
+   if (sound) play_background_music ("data/pennight.mod");
++  { extern void si_trace(const char *); si_trace("music started"); }
++
+ 
+   /* The game itself */
+   while(quit != 1) {

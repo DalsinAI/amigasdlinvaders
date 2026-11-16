@@ -43,6 +43,7 @@ static void close_datatypes(void)
     }
 }
 
+extern void si_trace(const char *);
 SDL_Surface *IMG_Load(const char *file)
 {
     Object *obj;
@@ -61,6 +62,7 @@ SDL_Surface *IMG_Load(const char *file)
         atexit(close_datatypes);
         registered = 1;
     }
+    si_trace(file);
     obj = NewDTObject((APTR)file,
                       DTA_GroupID, GID_PICTURE,
                       PDTA_DestMode, PMODE_V43,
@@ -71,7 +73,9 @@ SDL_Surface *IMG_Load(const char *file)
         SDL_SetError("IMG_Load: no picture datatype read %s (error %ld)", file, (long)IoErr());
         return NULL;
     }
+    si_trace(" new ok");
     DoMethod(obj, DTM_PROCLAYOUT, NULL, 1);
+    si_trace(" layout ok");
     if (GetDTAttrs(obj, PDTA_BitMapHeader, (ULONG)&bmh, TAG_DONE) != 1 || bmh == NULL)
     {
         DisposeDTObject(obj);
@@ -88,10 +92,12 @@ SDL_Surface *IMG_Load(const char *file)
         DisposeDTObject(obj);
         return NULL;
     }
+    si_trace(" surface ok");
     SDL_LockSurface(s);
     DoMethod(obj, PDTM_READPIXELARRAY, (ULONG)s->pixels, PBPAFMT_ARGB,
              (ULONG)s->pitch, 0, 0, w, h);
     {
+        si_trace(" read ok");
         int kind = img_alpha_kind((const unsigned char *)s->pixels, (int)w, (int)h, s->pitch);
         SDL_UnlockSurface(s);
         DisposeDTObject(obj);
