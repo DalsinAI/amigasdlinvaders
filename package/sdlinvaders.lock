@@ -1,0 +1,9 @@
+# The upstream sources the port builds: fetched by package/build-amiga.sh
+# and checked against these sha256 sums, never kept in this repository.
+SDLINVADERS_URL=https://downloads.sourceforge.net/project/sdlinvaders/sdlinvaders/0.7.6/SDLInvaders-0.7.6.tar.bz2
+SDLINVADERS_SHA256=7646ce1d6f93e554f972f47529bcca01cb7228ccc6cd41fd5fa28d7e5e91fd75
+SDLINVADERS_VERSION=0.7.6
+# MOD music for amiga/sdl_mixer_lite.c: libmikmod's MOD loader and player
+LIBMIKMOD_URL=https://downloads.sourceforge.net/project/mikmod/libmikmod/3.3.16/libmikmod-3.3.16.tar.gz
+LIBMIKMOD_SHA256=7b24e41468b0dfe7fae1104ae6a0d7c52e04a65e1851b268c7074e4d06685a53
+PORT_VERSION=0.7.6-gfos1

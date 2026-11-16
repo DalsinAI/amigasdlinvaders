@@ -1,0 +1,89 @@
+diff -ru a/main.c b/main.c
+--- a/main.c	2026-11-16 21:35:03.162003936 +0000
++++ b/main.c	2026-11-16 21:35:03.177694131 +0000
+@@ -22,6 +22,9 @@
+ #include "alien.h"
+ #include "weapons.h"
+ #include "music.h"
++#ifdef __amigaos__
++#include "amiga_start.h"
++#endif
+ 
+ #define TICKS  30
+ 
+@@ -773,7 +776,12 @@
+   int i;
+   char filename[100];
+        
++#ifdef __amigaos__
++  /* GFOS: the table is the player's, in the drawer's User/ */
++  sprintf (filename, AMIGA_SCORES);
++#else
+   sprintf (filename, "data/highscores");
++#endif
+ 
+   file = fopen(filename, "w");
+ 
+@@ -782,6 +790,9 @@
+     fprintf(stderr, "\n%s\n"
+ 	    "The error that occured was:\n"
+ 	    "%s\n\n", filename, strerror(errno));
++#ifdef __amigaos__
++    return;
++#endif
+   }
+ 
+   for (i=0;i<HIGHSCORES;i++) {
+@@ -800,7 +811,12 @@
+   int i;
+   char filename[100];
+        
++#ifdef __amigaos__
++  /* GFOS: the table is the player's, in the drawer's User/ */
++  sprintf (filename, AMIGA_SCORES);
++#else
+   sprintf (filename, "data/highscores");
++#endif
+ 
+   file = fopen(filename, "r");
+ 
+@@ -812,11 +828,24 @@
+   }
+ 
+   /* Read in the highscores from the file */
++#ifdef __amigaos__
++  /* GFOS: no table (a read-only drawer) shows an empty one */
++  if (file==NULL) {
++    for (i=0;i<HIGHSCORES;i++) {
++      strcpy(highscore[i].name, "-");
++      highscore[i].points = 0;
++      highscore[i].wave = 0;
++    }
++  } else
++#endif
+   for (i=0;i<HIGHSCORES;i++) {
+     fscanf(file, "%s\t%d\t%d\n", highscore[i].name,&highscore[i].points,&highscore[i].wave);
+     printf("%s\t%d\t%d\n", highscore[i].name,highscore[i].points,highscore[i].wave);
+   }
+ 
++#ifdef __amigaos__
++  if (file!=NULL)
++#endif
+   fclose(file);
+ 
+   if(game_points > highscore[HIGHSCORES-1].points) {
+@@ -832,6 +861,14 @@
+ {
+   int quit = 0;
+ 
++#ifdef __amigaos__
++  /* A Workbench start has no arguments: argc is 0 and argv the
++   * WBStartup message, which ReadCommandLine must not read. */
++  static char *wb_argv[] = { "SDLInvaders", NULL };
++  if (argc == 0)
++    argv = wb_argv;
++  amiga_setup();
++#endif
+   printf("\nSDLInvaders Version %s\n\n",VERSION);
+ 
+   /* Command line arguments are parsed */

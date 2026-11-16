@@ -1,0 +1,14 @@
+{
+  "name": "SDLInvaders",
+  "version": "0.7.6-gfos1",
+  "drawer": "SDLInvaders",
+  "program": "SDLInvaders",
+  "cpu": "68040",
+  "fpu": true,
+  "space": 2400000,
+  "modules": ["SDL2.module"],
+  "keep": ["User"],
+  "parent": "Work:Games",
+  "badge": "icons/art/sdlinvaders.png",
+  "script": "Install-SDLInvaders"
+}
