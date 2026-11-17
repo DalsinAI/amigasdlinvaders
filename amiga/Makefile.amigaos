@@ -33,7 +33,7 @@ MMFLAGS = -noixemul $(OPT) $(CPU) -D__amigaos__ -I$(MM)/include -I$(MM) \
           -DWORDS_BIGENDIAN=1 -DNO_DEPACKERS -DNO_HQMIXER
 LDFLAGS = -noixemul $(CPU)
 # libSDL.a is sdl12-compat with SDL 2's own members inside
-LIBS    = -L$(SDL2KIT)/lib -lSDL -lSDL2 -lm
+LIBS    = -L$(SDL2KIT)/lib -lSDL -lm
 
 BUILD   = build/amigaos
 OBJDIR  = $(BUILD)/obj
