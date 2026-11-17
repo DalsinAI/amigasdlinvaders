@@ -1,0 +1,97 @@
+# SDLInvaders for GFOS (AmigaOS 3.2 with GFOpenUp), 68040/68060 + FPU, on
+# GFOpenUp's SDL 2 (LIBS:GFOpenGPU/SDL2.module) through the kit's
+# sdl12-compat, linked into the program. Pictures come from the system's
+# picture datatypes (amiga/img_datatypes.c), sound and the MOD from
+# amiga/sdl_mixer_lite.c on libmikmod's MOD player.
+#
+#   make -f amiga/Makefile.amigaos -j4 SI=/path/to/SDLInvaders MM=/path/to/libmikmod [STOVE=...]
+#
+# SI is upstream SDLInvaders 0.7.6 with amiga/patches applied, MM upstream
+# libmikmod 3.3.16 (package/build-amiga.sh fetches, checks and patches
+# both). STOVE is a GFOpenAmigaGCC 16.2.0-open6 stove.
+#
+# Output: build/amigaos/SDLInvaders/ (the drawer), build/amigaos/SDLInvaders.info
+# and Install-SDLInvaders beside them.
+
+SI      ?= ../SDLInvaders
+MM      ?= ../libmikmod
+STOVE   ?= $(HOME)/AmiCradle/stoves/os32-gcc16-open6
+PREFIX  ?= $(STOVE)/prefix
+SDL2KIT ?= $(PREFIX)/m68k-amigaos
+CC      = $(PREFIX)/bin/m68k-amigaos-gcc
+STRIP   = $(PREFIX)/bin/m68k-amigaos-strip
+CPU     ?= -m68040 -m68881
+# -fno-tree-loop-distribute-patterns: GCC 16's loop miscompile (the kit's
+# sdl2-config gives it for GCC 16 too).
+OPT     ?= -O2 -fomit-frame-pointer -fno-tree-loop-distribute-patterns
+INC     = -Iamiga -Iamiga/include -Iamiga/include/SDL -I$(SDL2KIT)/include -I$(SDL2KIT)/include/SDL
+# -fcommon: upstream defines its globals in common.h, included by every
+# file (a 2004 C habit GCC 10 and later reject by default).
+CFLAGS  = -noixemul $(OPT) $(CPU) -fcommon -D__amigaos__ $(INC)
+MMFLAGS = -noixemul $(OPT) $(CPU) -D__amigaos__ -I$(MM)/include -I$(MM) \
+          -DMIKMOD_BUILD -DMIKMOD_STATIC -DHAVE_LIMITS_H -DHAVE_SNPRINTF -DHAVE_UNISTD_H \
+          -DWORDS_BIGENDIAN=1 -DNO_DEPACKERS -DNO_HQMIXER
+LDFLAGS = -noixemul $(CPU)
+# libSDL.a is sdl12-compat with SDL 2's own members inside
+LIBS    = -L$(SDL2KIT)/lib -lSDL -lSDL2 -lm
+
+BUILD   = build/amigaos
+OBJDIR  = $(BUILD)/obj
+OUT     = $(BUILD)/SDLInvaders
+PROG    = SDLInvaders
+
+GAME    = main graphics SFont alien weapons music
+MMSRC   = drivers/drv_nos loaders/load_mod \
+          playercode/mdriver playercode/mloader playercode/mlutil playercode/mplayer \
+          playercode/munitrk playercode/npertab playercode/sloader playercode/virtch \
+          playercode/virtch_common playercode/mwav \
+          mmio/mmalloc mmio/mmerror mmio/mmio posix/strcasecmp
+OBJS    = $(GAME:%=$(OBJDIR)/si/%.o) $(MMSRC:%=$(OBJDIR)/mm/%.o) \
+          $(OBJDIR)/amiga/amiga_start.o $(OBJDIR)/amiga/img_datatypes.o $(OBJDIR)/amiga/sdl_mixer_lite.o
+
+all: $(OUT)/$(PROG) package
+
+$(BUILD)/$(PROG).debug: $(OBJS)
+	@mkdir -p $(BUILD)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+
+$(OUT)/$(PROG): $(BUILD)/$(PROG).debug
+	@mkdir -p $(OUT)
+	$(STRIP) -o $@ $<
+
+package: $(OUT)/$(PROG) AMIGA_PORT.md amiga/Licences.txt amiga/Controls
+	mkdir -p $(OUT)/data $(OUT)/Licences
+	cp $(SI)/data/* $(OUT)/data/
+	cp amiga/Controls $(OUT)/Controls
+	cp AMIGA_PORT.md $(OUT)/ReadMe
+	cp $(SI)/README $(OUT)/ReadMe-SDLInvaders
+	cp $(SI)/COPYING $(OUT)/COPYING.txt
+	cp amiga/Licences.txt $(OUT)/Licences.txt
+	cp $(SDL2KIT)/share/GFOpenGPU-SDK/Licences/sdl12-compat.txt $(OUT)/Licences/
+	cp $(MM)/COPYING.LIB $(OUT)/Licences/libmikmod.txt
+	cp amiga/icons/SDLInvaders.info amiga/icons/ReadMe.info $(OUT)/
+	for f in ReadMe-SDLInvaders COPYING.txt Licences.txt Controls; do \
+	    cp amiga/icons/ReadMe.info $(OUT)/$$f.info; done
+	cp amiga/icons/SDLInvaders-drawer.info $(BUILD)/SDLInvaders.info
+	cp amiga/Install-SDLInvaders amiga/Install-SDLInvaders.info $(BUILD)/
+
+$(OBJDIR)/si/%.o: $(SI)/%.c $(wildcard $(SI)/*.h)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(OBJDIR)/mm/%.o: $(MM)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(MMFLAGS) -c -o $@ $<
+
+$(OBJDIR)/amiga/sdl_mixer_lite.o: amiga/sdl_mixer_lite.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -I$(MM)/include -DMIKMOD_STATIC -c -o $@ $<
+
+$(OBJDIR)/amiga/%.o: amiga/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+clean:
+	rm -rf $(BUILD)
+
+.PHONY: all package clean

@@ -1,0 +1,19 @@
+SDLInvaders: licences
+=====================
+
+The game: SDLInvaders 0.7.6 by Niels Weber and the SDLInvaders authors,
+from https://sourceforge.net/projects/sdlinvaders/.
+
+- The program and its data (data/: pictures, sounds, fonts and the
+  pennight.mod music) are under the GNU General Public License, version
+  2 or later (COPYING.txt).
+- sdl12-compat is linked into the program: Licences/sdl12-compat.txt.
+- libmikmod 3.3.16's MOD player is linked into the program for the
+  music: GNU Library General Public License 2 or later,
+  Licences/libmikmod.txt.
+- The sound and music layer (amiga/sdl_mixer_lite.c) comes from the
+  AmiCradle Penguin Command port, GPL 3 or later; the program as a whole
+  is therefore under GPL 3 or later.
+- The Amiga port's own files (amiga/, AMIGA_PORT.md, package/, tools/,
+  tests/) are GPL 2 or later, like the game; the GlowIcon art is The
+  AmiCradle Team's own.

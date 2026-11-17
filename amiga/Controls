@@ -1,0 +1,30 @@
+SDLInvaders: the keys
+=====================
+
+Shoot every invader before they shoot you or reach the ground.
+
+  Cursor Left/Right   move the fighter
+  Space               fire
+  R                   fire a rocket (it flies straight through the invaders)
+  S                   fire a seek rocket (it picks an invader)
+  B                   fire a bomb (it takes the invaders around too)
+  1 - 9               choose a special weapon
+  P                   pause, and again to go on
+  H                   help
+  Q                   quit
+
+The special weapons (R, S, B at the top) come from shooting the special
+alien that flies across the top.
+
+The mouse works too: move it left and right, the left button fires and
+the right button changes the weapon.
+
+The high scores are kept in the drawer's User/highscores. From a Shell:
+  SDLInvaders --nosound   no sound or music
+  SDLInvaders --easy      the easier game
+  SDLInvaders --fullscreen   a screen of its own (a window is the default)
+
+The keys every AmiCradle game has on Right Amiga (GFOpenUp's SDL2.module):
+Right Amiga + F window or full screen, + P pause, + Q quit, + M free the
+mouse pointer, + S a screenshot in the drawer's Screenshots, and Help
+shows this file.
